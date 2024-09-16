@@ -1,300 +1,66 @@
 from tkinter import *
-import math#libreria math
 
-root = Tk()
-root.title("Calculator")
-root.resizable(0,0)#-> se restringe el tamaño de la ventana
-root.geometry("350x380")#Window dimensions
+window = Tk()
 
-#Functions
-def envia_btn(value):
-    last = screen.get()#Obtiene el numero que presionas
-    screen.delete(0, END)#Clean the entry
-    screen.insert(0, str(last) +  str(value))#Une el numero que preosionaste con los siguientes
+#display var
+i = 0
 
-def clean():
-    screen.delete(0, END)
+def get_numbers(n):
+	global i
+	display.insert(i, n)
+	i += 1
+
+def get_operation(op):
+	global i
+	display.insert(i, op)
+	i += 1
+
+def clear_display():
+	display.delete(0, END)
 
 def equal():
-    global n2
-    n2 = float(screen.get())
-    screen.delete(0,END)
-    if op == "+":
-        screen.insert(0, n1 + n2)
-    elif op == "-":
-        screen.insert(0, n1 - n2)
-    elif op == "*":
-        screen.insert(0, n1 * n2)
-    elif op == "/":
-        if n2 != 0:
-            screen.insert(0, n1 / n2)
-        else:
-            screen.insert(0, "ERROR")
-    elif op == "^":
-        screen.insert(0, n1 ** n2)
-    elif op == "%":
-        screen.insert(0, n1 % n2)
+	display_state = display.get()
+	result = eval(display_state)
+	clear_display()
+	display.insert(0, result)
 
-def add():
-    global n1
-    global op
-    n1 = float(screen.get())
-    screen.delete(0,END)
-    op = "+"
+def undo():
+	display.delete(len(display.get()) - 1, END)
 
-def sub():
-    global n1
-    global op
-    n1 = float(screen.get())
-    screen.delete(0,END)
-    op = "-"
+display = Entry(window,
+	bg="#232323",
+	font="Calibri 20",
+	fg="white")
+display.grid(row=1, columnspan=4, sticky=W+E)
 
-def mul():
-    global n1
-    global op
-    n1 = float(screen.get())
-    screen.delete(0,END)
-    op = "*"
+#Numbers
+#sticky=W+E -> take all his width from western to eastern
+Button(window, text="1", font="Calibri 20", bg="#F0F0F0", bd=1, command=lambda: get_numbers(1)).grid(row=3, column=0, sticky=W+E)
+Button(window, text="2", font="Calibri 20", bg="#F0F0F0", bd=1, command=lambda: get_numbers(2)).grid(row=3, column=1, sticky=W+E)
+Button(window, text="3", font="Calibri 20", bg="#F0F0F0", bd=1, command=lambda: get_numbers(3)).grid(row=3, column=2, sticky=W+E)
 
-def div():
-    global n1
-    global op
-    n1 = float(screen.get())
-    screen.delete(0,END)
-    op = "/"
+Button(window, text="4", font="Calibri 20", bg="#F0F0F0", bd=1, command=lambda: get_numbers(4)).grid(row=4, column=0, sticky=W+E)
+Button(window, text="5", font="Calibri 20", bg="#F0F0F0", bd=1, command=lambda: get_numbers(5)).grid(row=4, column=1, sticky=W+E)
+Button(window, text="6", font="Calibri 20", bg="#F0F0F0", bd=1, command=lambda: get_numbers(6)).grid(row=4, column=2, sticky=W+E)
 
-def pow():
-    global n1
-    global op
-    n1 = float(screen.get())
-    screen.delete(0,END)
-    op = "^"
-    
-def percentage():
-    global n1
-    global op
-    n1 = float(screen.get())
-    screen.delete(0,END)
-    op = "%"
+Button(window, text="7", font="Calibri 20", bg="#F0F0F0", bd=1, command=lambda: get_numbers(7)).grid(row=5, column=0, sticky=W+E)
+Button(window, text="8", font="Calibri 20", bg="#F0F0F0", bd=1, command=lambda: get_numbers(8)).grid(row=5, column=1, sticky=W+E)
+Button(window, text="9", font="Calibri 20", bg="#F0F0F0", bd=1, command=lambda: get_numbers(9)).grid(row=5, column=2, sticky=W+E)
 
-screen = Entry(
-            root,
-            width=22,
-            bg="black",
-            fg="white",
-            borderwidth=0,
-            font=("Arial", 18, "bold")
-            )
-screen.grid(row=0, padx=5, pady=5, columnspan=4)#columnspan -> cantidad de columnas de la ventana
+Button(window, text="0", font="Calibri 20", bg="#F0F0F0", bd=1, command=lambda: get_numbers(0)).grid(row=6, columnspan=2, sticky=W+E)
 
-#Numbers buttons
-btn_0 = Button(
-    root,
-    text="0",
-    width=9,
-    height=3,
-    bg="grey",
-    fg="white",
-    borderwidth=0,
-    cursor="hand2",
-    command=lambda : envia_btn(0)).grid(row=4, column=1, padx=3, pady=3)
+#Top buttons
+Button(window, text="AC", font="Calibri 20", bg="gray", bd=1, fg="white", command=lambda: clear_display()).grid(row=2, column=0, sticky=W+E)
+Button(window, text="%", font="Calibri 20", bg="gray", bd=1, fg="white", command=lambda: get_operation("%")).grid(row=2, column=1, sticky=W+E)
+Button(window, text="←", font="Calibri 20", bg="gray", bd=1, fg="white", command=lambda: undo()).grid(row=2, column=2, sticky=W+E)
+Button(window, text="/", font="Calibri 20", bg="orange", bd=1, fg="white", command=lambda: get_operation("/")).grid(row=2, column=3, sticky=W+E)
 
-btn_1 = Button(
-    root,
-    text="1",
-    width=9,
-    height=3,
-    bg="grey",
-    fg="white",
-    borderwidth=0,
-    cursor="hand2",
-    command=lambda : envia_btn(1)).grid(row=3, column=0, padx=3, pady=3)
+#Lateral operations
+Button(window, text="X", font="Calibri 20", bg="orange", bd=1, fg="white", command=lambda: get_operation("*")).grid(row=3, column=3, sticky=W+E)
+Button(window, text="+", font="Calibri 20", bg="orange", bd=1, fg="white", command=lambda: get_operation("+")).grid(row=4, column=3, sticky=W+E)
+Button(window, text="-", font="Calibri 20", bg="orange", bd=1, fg="white", command=lambda: get_operation("-")).grid(row=5, column=3, sticky=W+E)
+Button(window, text="=", font="Calibri 20", bg="orange", bd=1, fg="white", command=lambda: equal()).grid(row=6, column=3, sticky=W+E)
 
-btn_2 = Button(
-    root,
-    text="2",
-    width=9,
-    height=3,
-    bg="grey",
-    fg="white",
-    borderwidth=0,
-    cursor="hand2",
-    command=lambda : envia_btn(2)).grid(row=3, column=1, padx=3, pady=3)
-
-btn_3 = Button(
-    root,
-    text="3",
-    width=9,
-    height=3,
-    bg="grey",
-    fg="white",
-    borderwidth=0,
-    cursor="hand2",
-    command=lambda : envia_btn(3)).grid(row=3, column=2, padx=3, pady=3)
-
-btn_4 = Button(
-    root,
-    text="4",
-    width=9,
-    height=3,
-    bg="grey",
-    fg="white",
-    borderwidth=0,
-    cursor="hand2",
-    command=lambda : envia_btn(4)).grid(row=2, column=0, padx=3, pady=3)
-
-btn_5 = Button(
-    root,
-    text="5",
-    width=9,
-    height=3,
-    bg="grey",
-    fg="white",
-    borderwidth=0,
-    cursor="hand2",
-    command=lambda : envia_btn(5)).grid(row=2, column=1, padx=3, pady=3)
-
-btn_6 = Button(
-    root,
-    text="6",
-    width=9,
-    height=3,
-    bg="grey",
-    fg="white",
-    borderwidth=0,
-    cursor="hand2",
-    command=lambda : envia_btn(6)).grid(row=2, column=2, padx=3, pady=3)
-
-btn_7 = Button(
-    root,
-    text="7",
-    width=9,
-    height=3,
-    bg="grey",
-    fg="white",
-    borderwidth=0,
-    cursor="hand2",
-    command=lambda : envia_btn(7)).grid(row=1, column=0, padx=3, pady=3)
-
-btn_8 = Button(
-    root,
-    text="8",
-    width=9,
-    height=3,
-    bg="grey",
-    fg="white",
-    borderwidth=0,
-    cursor="hand2",
-    command=lambda : envia_btn(8)).grid(row=1, column=1, padx=3, pady=3)
-
-btn_9 = Button(
-    root,
-    text="9",
-    width=9,
-    height=3,
-    bg="grey",
-    fg="white",
-    borderwidth=0,
-    cursor="hand2",
-    command=lambda : envia_btn(9)).grid(row=1, column=2, padx=3, pady=3)
-
-#Operation buttons
-btn_equal = Button(
-    root,
-    text="=",
-    width=9,
-    height=7,
-    bg="green",
-    fg="white",
-    borderwidth=0,
-    cursor="hand2",
-    command=equal).grid(row=4, column=0, rowspan=2, padx=3, pady=3)
-
-btn_decimal = Button(
-    root,
-    text=".",
-    width=9,
-    height=3,
-    bg="red",
-    fg="white",
-    borderwidth=0,
-    cursor="hand2",
-    command= lambda : envia_btn(".")).grid(row=4, column=2, padx=3, pady=3)
-
-btn_add = Button(
-    root,
-    text="+",
-    width=9,
-    height=3,
-    bg="blue",
-    fg="white",
-    borderwidth=0,
-    cursor="hand2",
-    command=add).grid(row=4, column=3, padx=3, pady=3)
-
-btn_sub = Button(
-    root,
-    text="-",
-    width=9,
-    height=3,
-    bg="blue",
-    fg="white",
-    borderwidth=0,
-    cursor="hand2",
-    command=sub).grid(row=3, column=3, padx=3, pady=3)
-
-btn_mul = Button(
-    root,
-    text="X",
-    width=9,
-    height=3,
-    bg="blue",
-    fg="white",
-    borderwidth=0,
-    cursor="hand2",
-    command=mul).grid(row=2, column=3, padx=3, pady=3)
-
-btn_div = Button(
-    root,
-    text="/",
-    width=9,
-    height=3,
-    bg="blue",
-    fg="white",
-    borderwidth=0,
-    cursor="hand2",
-    command=div).grid(row=1, column=3, padx=3, pady=3)
-
-btn_clear = Button(
-    root,
-    text="CLEAN",
-    width=9,
-    height=3,
-    bg="gray",
-    fg="white",
-    borderwidth=0,
-    cursor="hand2",
-    command=clean).grid(row=5, column=1, padx=3, pady=3)
-
-btn_root = Button(
-    root,
-    text="^",
-    width=9,
-    height=3,
-    bg="blue",
-    fg="white",
-    borderwidth=0,
-    cursor="hand2",
-    command=pow).grid(row=5, column=2, padx=3, pady=3)
-
-btn_root = Button(
-    root,
-    text="%",
-    width=9,
-    height=3,
-    bg="blue",
-    fg="white",
-    borderwidth=0,
-    cursor="hand2",
-    command=percentage).grid(row=5, column=3, padx=3, pady=3)
-root.mainloop()
+#Decimal button
+Button(window, text=".", font="Calibri 20", bg="#F0F0F0", bd=1, command=lambda: get_operation(".")).grid(row=6, column=2, sticky=W+E)
+window.mainloop()
